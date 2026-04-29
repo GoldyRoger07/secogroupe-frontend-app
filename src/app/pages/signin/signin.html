@@ -1,11 +1,26 @@
 <div class="h-screen w-full flex items-center justify-center bg-gray-100">
-    <div class="max-w-xl w-full flex flex-col shadow bg-white p-5">
-        <div>
-            <img src="img/logo/logo2.png" class="w-20" alt="logo">
-            <h1 class="text-gray-600 font bold text-2xl">Welcome back to Secogroupe</h1>
+    <div class="max-w-md w-full flex flex-col gap-3 shadow bg-white p-10">
+        <div class="flex items-center gap-3">
+            <img src="img/logo/logo1.png" class="w-10" alt="logo">
+            <h1 class="text-gray-500 font-semibold text-2xl">Secogroupe</h1>
         </div>
-        <div>
-            
-        </div>
+        <h2 class="text-gray-500  text-lg ">Sign in to your account</h2>
+        <form class="flex flex-col gap-3">
+
+            <p-floatlabel variant="on">
+                    <input pInputText id="on_label" autocomplete="off" fluid />
+                    <label for="on_label">Username</label>
+            </p-floatlabel>
+
+            <p-floatlabel variant="on">
+                    <input pInputText id="password" autocomplete="off" fluid  type="password"/>
+                    <label for="password">Password</label>
+            </p-floatlabel>
+
+            <p class="text-gray-500 text-sm">No account ? <a href="#" class="text-blue-500 hover:underline">Create One</a></p>
+            <a href="#" class="text-blue-500 text-sm hover:underline">Forgot Password ?</a>
+
+            <p-button label="Submit" class="ml-auto"/>
+        </form>
     </div>
 </div>
