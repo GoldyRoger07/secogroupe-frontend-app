@@ -1,0 +1,10 @@
+{
+    "SIGNIN":{
+        "TITLE": "Sign in to your account",
+        "USERNAME": "Username",
+        "PASSWORD": "Password",
+        "NO_ACCOUNT": "No account ?",
+        "CREATE_LINK": "Create one",
+        "FORGOT_PASSWORD": "Forgot password ?"
+    }
+}

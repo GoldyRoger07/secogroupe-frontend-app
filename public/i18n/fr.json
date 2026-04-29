@@ -1,0 +1,10 @@
+{
+    "SIGNIN":{
+        "TITLE": "Connectez-vous a votre compte",
+        "USERNAME": "Nom d'utilisateur",
+        "PASSWORD": "Mot de passe",
+        "NO_ACCOUNT": "Vous n'avez pas de compte ?",
+        "CREATE_LINK": "Creez en un",
+        "FORGOT_PASSWORD": "Mot de passe oublier ?"
+    }
+}
