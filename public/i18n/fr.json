@@ -6,5 +6,39 @@
         "NO_ACCOUNT": "Vous n'avez pas de compte ?",
         "CREATE_LINK": "Creez en un",
         "FORGOT_PASSWORD": "Mot de passe oublier ?"
+    },
+    "hiring":{
+        "title": "Rejoignez {{companyName}}",
+        "description": "Nous recherchons des talents motivés et engagés. Consultez nos offres et téléchargez les avis de recrutement.",
+        "cards":{
+            "card1":{
+                "title": "Comptable",
+                "description": "Gestion financière, suivi des opérations comptables et production de rapports fiables.",
+                "textBtn": "Regarder le fichier PDF"
+            },
+            "card2":{
+                "title": "Graphiste",
+                "description": "Création de visuels modernes pour renforcer l'identité visuelle de l'entreprise.",
+                "textBtn": "Regarder le fichier PDF"
+            },
+            "card3":{
+                "title": "Agent Commercial",
+                "description": "Développement du portefeuille client et promotion des services.",
+                "textBtn": "Regarder le fichier PDF"
+            },
+            "card4":{
+                "title": "Recruteur",
+                "description": "Identification et sélection des talents, gestion du processus de recrutement.",
+                "textBtn": "Regarder le fichier PDF"
+            }
+        },
+
+        "section3":{
+            "title": "Vous souhaitez rejoindre notre équipe ?",
+            "description": "Postulez dès aujourd’hui et faites partie de SECOGROUPE.",
+            "textBtn": "Postuler maintenant"
+            
+        }
     }
+
 }
