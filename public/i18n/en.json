@@ -1,10 +1,46 @@
 {
-    "SIGNIN":{
-        "TITLE": "Sign in to your account",
-        "USERNAME": "Username",
-        "PASSWORD": "Password",
-        "NO_ACCOUNT": "No account ?",
-        "CREATE_LINK": "Create one",
-        "FORGOT_PASSWORD": "Forgot password ?"
-    }
+  "COMMON": {
+    "ERROR_SERVER": "A server error occurred. Please try again later."
+  },
+  "SIGNIN": {
+    "TITLE": "Sign in to your account",
+    "USERNAME": "Username",
+    "PASSWORD": "Password",
+    "SUBMIT": "Sign in",
+    "NO_ACCOUNT": "No account?",
+    "CREATE_LINK": "Create one",
+    "FORGOT_PASSWORD": "Forgot password?",
+    "ERROR_CREDENTIALS": "Invalid username or password.",
+    "ERROR_NOT_VERIFIED": "Please verify your email before signing in.",
+    "ERROR_USERNAME_REQUIRED": "Username is required (min. 3 characters).",
+    "ERROR_PASSWORD_REQUIRED": "Password is required (min. 8 characters)."
+  },
+  "SIGNUP": {
+    "TITLE": "Create your account",
+    "USERNAME": "Username",
+    "EMAIL": "Email address",
+    "PASSWORD": "Password",
+    "CONFIRM_PASSWORD": "Confirm password",
+    "SUBMIT": "Create account",
+    "HAS_ACCOUNT": "Already have an account?",
+    "SIGNIN_LINK": "Sign in",
+    "ERROR_USERNAME": "Username is required (3–50 characters).",
+    "ERROR_EMAIL": "A valid email address is required.",
+    "ERROR_PASSWORD": "Password must be at least 8 characters.",
+    "ERROR_PASSWORD_MISMATCH": "Passwords do not match.",
+    "ERROR_USER_EXISTS": "This username or email is already taken."
+  },
+  "VERIFY_OTP": {
+    "TITLE": "Verify your email",
+    "DESCRIPTION": "We sent a 6-digit code to",
+    "CODE_LABEL": "Verification code",
+    "SUBMIT": "Verify",
+    "NO_CODE": "Didn't receive a code?",
+    "RESEND": "Resend",
+    "RESEND_SUCCESS": "A new code has been sent to your email.",
+    "BACK_SIGNIN": "Back to sign in",
+    "ERROR_INVALID": "Invalid code. Please check and try again.",
+    "ERROR_EXPIRED": "This code has expired. Please request a new one.",
+    "ERROR_CODE_FORMAT": "The code must be exactly 6 digits."
+  }
 }

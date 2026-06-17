@@ -1,1 +1,63 @@
-<p>signup works!</p>
+<div class="h-screen w-full flex items-center justify-center bg-gray-100">
+  <div class="max-w-md w-full flex flex-col gap-4 shadow bg-white p-10">
+
+    <div class="flex items-center gap-3">
+      <img src="img/logo/logo1.png" class="w-10" alt="logo">
+      <h1 class="text-gray-500 font-semibold text-2xl">Secogroupe</h1>
+    </div>
+
+    <h2 class="text-gray-500 text-lg">{{'SIGNUP.TITLE' | translate}}</h2>
+
+    @if (errorMessage()) {
+      <p-message severity="error">{{ errorMessage() | translate }}</p-message>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+      <p-floatlabel variant="on">
+        <input pInputText id="username" formControlName="username" autocomplete="off" fluid />
+        <label for="username">{{'SIGNUP.USERNAME' | translate}}</label>
+      </p-floatlabel>
+      @if (form.get('username')?.invalid && form.get('username')?.touched) {
+        <small class="text-red-500 -mt-3">{{'SIGNUP.ERROR_USERNAME' | translate}}</small>
+      }
+
+      <p-floatlabel variant="on">
+        <input pInputText id="email" formControlName="email" autocomplete="off" fluid type="email" />
+        <label for="email">{{'SIGNUP.EMAIL' | translate}}</label>
+      </p-floatlabel>
+      @if (form.get('email')?.invalid && form.get('email')?.touched) {
+        <small class="text-red-500 -mt-3">{{'SIGNUP.ERROR_EMAIL' | translate}}</small>
+      }
+
+      <p-floatlabel variant="on">
+        <p-password id="password" formControlName="password" [toggleMask]="true" fluid />
+        <label for="password">{{'SIGNUP.PASSWORD' | translate}}</label>
+      </p-floatlabel>
+      @if (form.get('password')?.invalid && form.get('password')?.touched) {
+        <small class="text-red-500 -mt-3">{{'SIGNUP.ERROR_PASSWORD' | translate}}</small>
+      }
+
+      <p-floatlabel variant="on">
+        <p-password id="confirmPassword" formControlName="confirmPassword" [feedback]="false" [toggleMask]="true" fluid />
+        <label for="confirmPassword">{{'SIGNUP.CONFIRM_PASSWORD' | translate}}</label>
+      </p-floatlabel>
+      @if (form.errors?.['passwordMismatch'] && form.get('confirmPassword')?.touched) {
+        <small class="text-red-500 -mt-3">{{'SIGNUP.ERROR_PASSWORD_MISMATCH' | translate}}</small>
+      }
+
+      <p class="text-gray-500 text-sm">
+        {{'SIGNUP.HAS_ACCOUNT' | translate}}
+        <a routerLink="/signin" class="text-blue-500 hover:underline">{{'SIGNUP.SIGNIN_LINK' | translate}}</a>
+      </p>
+
+      <p-button
+        type="submit"
+        label="{{'SIGNUP.SUBMIT' | translate}}"
+        [loading]="loading()"
+        class="ml-auto"
+      />
+    </form>
+
+  </div>
+</div>

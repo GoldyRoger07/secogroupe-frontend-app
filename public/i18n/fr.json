@@ -1,44 +1,77 @@
 {
-    "SIGNIN":{
-        "TITLE": "Connectez-vous a votre compte",
-        "USERNAME": "Nom d'utilisateur",
-        "PASSWORD": "Mot de passe",
-        "NO_ACCOUNT": "Vous n'avez pas de compte ?",
-        "CREATE_LINK": "Creez en un",
-        "FORGOT_PASSWORD": "Mot de passe oublier ?"
+  "COMMON": {
+    "ERROR_SERVER": "Une erreur serveur est survenue. Veuillez réessayer plus tard."
+  },
+  "SIGNIN": {
+    "TITLE": "Connectez-vous à votre compte",
+    "USERNAME": "Nom d'utilisateur",
+    "PASSWORD": "Mot de passe",
+    "SUBMIT": "Se connecter",
+    "NO_ACCOUNT": "Vous n'avez pas de compte ?",
+    "CREATE_LINK": "Créez-en un",
+    "FORGOT_PASSWORD": "Mot de passe oublié ?",
+    "ERROR_CREDENTIALS": "Nom d'utilisateur ou mot de passe incorrect.",
+    "ERROR_NOT_VERIFIED": "Veuillez vérifier votre email avant de vous connecter.",
+    "ERROR_USERNAME_REQUIRED": "Le nom d'utilisateur est requis (min. 3 caractères).",
+    "ERROR_PASSWORD_REQUIRED": "Le mot de passe est requis (min. 8 caractères)."
+  },
+  "SIGNUP": {
+    "TITLE": "Créez votre compte",
+    "USERNAME": "Nom d'utilisateur",
+    "EMAIL": "Adresse email",
+    "PASSWORD": "Mot de passe",
+    "CONFIRM_PASSWORD": "Confirmer le mot de passe",
+    "SUBMIT": "Créer le compte",
+    "HAS_ACCOUNT": "Vous avez déjà un compte ?",
+    "SIGNIN_LINK": "Se connecter",
+    "ERROR_USERNAME": "Le nom d'utilisateur est requis (3–50 caractères).",
+    "ERROR_EMAIL": "Une adresse email valide est requise.",
+    "ERROR_PASSWORD": "Le mot de passe doit contenir au moins 8 caractères.",
+    "ERROR_PASSWORD_MISMATCH": "Les mots de passe ne correspondent pas.",
+    "ERROR_USER_EXISTS": "Ce nom d'utilisateur ou cet email est déjà utilisé."
+  },
+  "VERIFY_OTP": {
+    "TITLE": "Vérifiez votre email",
+    "DESCRIPTION": "Nous avons envoyé un code à 6 chiffres à",
+    "CODE_LABEL": "Code de vérification",
+    "SUBMIT": "Vérifier",
+    "NO_CODE": "Vous n'avez pas reçu de code ?",
+    "RESEND": "Renvoyer",
+    "RESEND_SUCCESS": "Un nouveau code a été envoyé à votre email.",
+    "BACK_SIGNIN": "Retour à la connexion",
+    "ERROR_INVALID": "Code invalide. Vérifiez et réessayez.",
+    "ERROR_EXPIRED": "Ce code a expiré. Veuillez en demander un nouveau.",
+    "ERROR_CODE_FORMAT": "Le code doit contenir exactement 6 chiffres."
+  },
+  "hiring": {
+    "title": "Rejoignez {{companyName}}",
+    "description": "Nous recherchons des talents motivés et engagés. Consultez nos offres et téléchargez les avis de recrutement.",
+    "cards": {
+      "card1": {
+        "title": "Comptable",
+        "description": "Gestion financière, suivi des opérations comptables et production de rapports fiables.",
+        "textBtn": "Regarder le fichier PDF"
+      },
+      "card2": {
+        "title": "Graphiste",
+        "description": "Création de visuels modernes pour renforcer l'identité visuelle de l'entreprise.",
+        "textBtn": "Regarder le fichier PDF"
+      },
+      "card3": {
+        "title": "Agent Commercial",
+        "description": "Développement du portefeuille client et promotion des services.",
+        "textBtn": "Regarder le fichier PDF"
+      },
+      "card4": {
+        "title": "Recruteur",
+        "description": "Identification et sélection des talents, gestion du processus de recrutement.",
+        "textBtn": "Regarder le fichier PDF"
+      }
     },
-    "hiring":{
-        "title": "Rejoignez {{companyName}}",
-        "description": "Nous recherchons des talents motivés et engagés. Consultez nos offres et téléchargez les avis de recrutement.",
-        "cards":{
-            "card1":{
-                "title": "Comptable",
-                "description": "Gestion financière, suivi des opérations comptables et production de rapports fiables.",
-                "textBtn": "Regarder le fichier PDF"
-            },
-            "card2":{
-                "title": "Graphiste",
-                "description": "Création de visuels modernes pour renforcer l'identité visuelle de l'entreprise.",
-                "textBtn": "Regarder le fichier PDF"
-            },
-            "card3":{
-                "title": "Agent Commercial",
-                "description": "Développement du portefeuille client et promotion des services.",
-                "textBtn": "Regarder le fichier PDF"
-            },
-            "card4":{
-                "title": "Recruteur",
-                "description": "Identification et sélection des talents, gestion du processus de recrutement.",
-                "textBtn": "Regarder le fichier PDF"
-            }
-        },
-
-        "section3":{
-            "title": "Vous souhaitez rejoindre notre équipe ?",
-            "description": "Postulez dès aujourd’hui et faites partie de SECOGROUPE.",
-            "textBtn": "Postuler maintenant"
-            
-        }
+    "section3": {
+      "title": "Vous souhaitez rejoindre notre équipe ?",
+      "description": "Postulez dès aujourd'hui et faites partie de SECOGROUPE.",
+      "textBtn": "Postuler maintenant"
     }
-
+  }
 }

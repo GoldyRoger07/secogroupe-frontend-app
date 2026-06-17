@@ -1,0 +1,64 @@
+<div class="h-screen w-full flex items-center justify-center bg-gray-100">
+  <div class="max-w-md w-full flex flex-col gap-4 shadow bg-white p-10">
+
+    <div class="flex items-center gap-3">
+      <img src="img/logo/logo1.png" class="w-10" alt="logo">
+      <h1 class="text-gray-500 font-semibold text-2xl">Secogroupe</h1>
+    </div>
+
+    <h2 class="text-gray-500 text-lg">{{'VERIFY_OTP.TITLE' | translate}}</h2>
+
+    <p class="text-gray-400 text-sm">
+      {{'VERIFY_OTP.DESCRIPTION' | translate}} <span class="font-medium text-gray-600">{{ email() }}</span>
+    </p>
+
+    @if (errorMessage()) {
+      <p-message severity="error">{{ errorMessage() | translate }}</p-message>
+    }
+    @if (successMessage()) {
+      <p-message severity="success">{{ successMessage() | translate }}</p-message>
+    }
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="flex flex-col gap-4">
+
+      <p-floatlabel variant="on">
+        <input
+          pInputText
+          id="otpCode"
+          formControlName="otpCode"
+          autocomplete="one-time-code"
+          inputmode="numeric"
+          maxlength="6"
+          fluid
+        />
+        <label for="otpCode">{{'VERIFY_OTP.CODE_LABEL' | translate}}</label>
+      </p-floatlabel>
+      @if (form.get('otpCode')?.invalid && form.get('otpCode')?.touched) {
+        <small class="text-red-500 -mt-3">{{'VERIFY_OTP.ERROR_CODE_FORMAT' | translate}}</small>
+      }
+
+      <p-button
+        type="submit"
+        label="{{'VERIFY_OTP.SUBMIT' | translate}}"
+        [loading]="loading()"
+        styleClass="w-full"
+      />
+
+      <div class="flex items-center justify-between text-sm text-gray-500">
+        <span>{{'VERIFY_OTP.NO_CODE' | translate}}</span>
+        <p-button
+          type="button"
+          label="{{'VERIFY_OTP.RESEND' | translate}}"
+          [loading]="resendLoading()"
+          variant="text"
+          (onClick)="resendCode()"
+        />
+      </div>
+
+      <a routerLink="/signin" class="text-blue-500 text-sm hover:underline w-fit">
+        &larr; {{'VERIFY_OTP.BACK_SIGNIN' | translate}}
+      </a>
+
+    </form>
+  </div>
+</div>
