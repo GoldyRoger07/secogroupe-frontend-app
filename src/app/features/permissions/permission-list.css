@@ -1,0 +1,104 @@
+/* ── Grid card ── */
+.perm-card-top {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 14px 12px 4px;
+  width: 100%;
+}
+
+.perm-card-name {
+  font-family: 'Consolas', monospace;
+  font-size: 12.5px;
+  letter-spacing: 0.3px;
+  background: #f3f2f1;
+  border-radius: 4px;
+  padding: 3px 8px;
+  word-break: break-all;
+}
+
+.perm-desc {
+  font-size: 12px;
+  padding: 4px 14px 6px;
+  color: #605e5c;
+}
+
+/* ── Table ── */
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.perm-name {
+  font-family: 'Consolas', monospace;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #323130;
+  background: #f3f2f1;
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.desc-cell {
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Action chip */
+.action-chip {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.action-read    { background: #deecf9; color: #0078d4; }
+.action-create  { background: #dff6dd; color: #107c10; }
+.action-update  { background: #fff4ce; color: #7d5600; }
+.action-delete  { background: #fde7e9; color: #a4262c; }
+.action-export  { background: #f3e8ff; color: #8764b8; }
+.action-import  { background: #e8f5e9; color: #2e7d32; }
+
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.form-row.two-col .form-field { flex: 1; }
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.req { color: #d13438; }
+.error { color: #d13438; font-size: 12px; }
+.hint { color: #605e5c; font-size: 12px; }

@@ -1,0 +1,184 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">
+      <i class="pi pi-lock page-icon" style="color: #d83b01;"></i>
+      <div>
+        <h1>Permissions</h1>
+        <span class="page-subtitle">Gestion des permissions système</span>
+      </div>
+    </div>
+    <p-button label="Ajouter" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <div class="table-card">
+    <div class="toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText [(ngModel)]="searchQuery" (input)="onSearch()"
+          placeholder="Rechercher une permission..." class="search-input" />
+      </p-iconfield>
+      <div class="filter-group">
+        <p-select [(ngModel)]="moduleFilter" [options]="moduleOptions" optionLabel="label" optionValue="value"
+          placeholder="Module" [showClear]="true" (onChange)="onFilter()" [style]="{ width: '155px' }" />
+        <p-select [(ngModel)]="actionFilter" [options]="actionOptions" optionLabel="label" optionValue="value"
+          placeholder="Action" [showClear]="true" (onChange)="onFilter()" [style]="{ width: '145px' }" />
+        @if (hasFilters()) {
+          <p-button icon="pi pi-times" [text]="true" severity="secondary" (click)="clearFilters()" pTooltip="Effacer les filtres" />
+        }
+      </div>
+
+      <div class="view-toggle">
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'table'" (click)="setViewMode('table')" title="Vue tableau">
+          <i class="pi pi-list"></i>
+        </button>
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Vue grille">
+          <i class="pi pi-th-large"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <span class="records-info">{{ totalRecords() }} résultat(s)</span>
+      </div>
+    </div>
+
+    <!-- ── TABLE VIEW ──────────────────────────────────── -->
+    @if (viewMode() === 'table') {
+      <p-table
+        [value]="permissions()"
+        [lazy]="true" [loading]="loading()"
+        (onLazyLoad)="loadData($event)"
+        [totalRecords]="totalRecords()"
+        [rows]="pageSize" [paginator]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} à {last} sur {totalRecords} permissions"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-sm p-datatable-striped "
+        dataKey="id"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name" style="min-width: 200px">Nom <p-sortIcon field="name" /></th>
+            <th style="min-width: 240px">Description</th>
+            <th pSortableColumn="module" style="min-width: 130px">Module <p-sortIcon field="module" /></th>
+            <th pSortableColumn="action" style="min-width: 120px">Action <p-sortIcon field="action" /></th>
+            <th pSortableColumn="createdAt" style="min-width: 130px">Créé le <p-sortIcon field="createdAt" /></th>
+            <th style="width: 110px; text-align: center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-perm>
+          <tr>
+            <td><span class="perm-name">{{ perm.name }}</span></td>
+            <td class="text-secondary desc-cell">{{ perm.description || '—' }}</td>
+            <td><p-tag [value]="perm.module" [severity]="getModuleSeverity(perm.module)" /></td>
+            <td><span class="action-chip action-{{ perm.action.toLowerCase() }}">{{ getActionLabel(perm.action) }}</span></td>
+            <td class="text-secondary">{{ perm.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="action-btns">
+                <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="secondary"
+                  (click)="openDialog(perm)" pTooltip="Modifier" tooltipPosition="top" />
+                <p-button icon="pi pi-trash" [text]="true" [rounded]="true" size="small" severity="danger"
+                  (click)="confirmDelete(perm)" pTooltip="Supprimer" tooltipPosition="top" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr><td colspan="6"><div class="empty-state">
+            <i class="pi pi-lock"></i><p>Aucune permission trouvée</p>
+          </div></td></tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody">
+          @for (r of [1,2,3,4,5,6]; track r) {
+            <tr>@for (c of [1,2,3,4,5,6]; track c) { <td><p-skeleton height="1.4rem" /></td> }</tr>
+          }
+        </ng-template>
+      </p-table>
+    }
+
+    <!-- ── GRID VIEW ───────────────────────────────────── -->
+    @if (viewMode() === 'grid') {
+      @if (loading()) {
+        <div class="card-grid">
+          @for (n of [1,2,3,4,5,6,7,8,9,10,11,12]; track n) {
+            <div class="entity-card skeleton-card">
+              <p-skeleton height="1rem" width="75%" styleClass="mb-2" />
+              <p-skeleton height="0.8rem" width="90%" styleClass="mb-2" />
+              <p-skeleton height="1.5rem" width="50%" styleClass="mb-2" />
+              <p-skeleton height="1.5rem" width="40%" />
+            </div>
+          }
+        </div>
+      } @else if (permissions().length === 0) {
+        <div class="empty-state" style="padding: 56px;">
+          <i class="pi pi-lock"></i><p>Aucune permission trouvée</p>
+        </div>
+      } @else {
+        <div class="card-grid">
+          @for (perm of permissions(); track perm.id) {
+            <div class="entity-card perm-card-item">
+              <div class="card-header-accent" style="background: #d83b01;"></div>
+              <div class="perm-card-top">
+                <p-tag [value]="perm.module" [severity]="getModuleSeverity(perm.module)" />
+                <span class="action-chip action-{{ perm.action.toLowerCase() }}">{{ getActionLabel(perm.action) }}</span>
+              </div>
+              <div class="card-name perm-card-name">{{ perm.name }}</div>
+              <div class="card-sub perm-desc">{{ perm.description || 'Aucune description' }}</div>
+              <div class="card-meta">
+                <i class="pi pi-calendar"></i>
+                {{ perm.createdAt | date:'dd/MM/yyyy' }}
+              </div>
+              <div class="card-footer-actions">
+                <p-button icon="pi pi-pencil" label="Modifier" [text]="true" size="small" severity="secondary"
+                  (click)="openDialog(perm)" />
+                <p-button icon="pi pi-trash" label="Supprimer" [text]="true" size="small" severity="danger"
+                  (click)="confirmDelete(perm)" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+      <div class="grid-paginator">
+        <p-paginator [first]="gridFirst" [rows]="gridRows" [totalRecords]="totalRecords()"
+          [rowsPerPageOptions]="[12, 24, 48]" (onPageChange)="onGridPageChange($event)"
+          [showCurrentPageReport]="true" currentPageReportTemplate="{first} à {last} sur {totalRecords}" />
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Dialog -->
+<p-dialog [(visible)]="dialogVisible"
+  [header]="editingPermission() ? 'Modifier la permission' : 'Nouvelle permission'"
+  [style]="{ width: '520px' }" [modal]="true" [draggable]="false" [resizable]="false">
+  <form [formGroup]="form" class="dialog-form">
+    <div class="form-row two-col">
+      <div class="form-field">
+        <label>Module <span class="req">*</span></label>
+        <p-select formControlName="module" [options]="moduleOptions" optionLabel="label" optionValue="value"
+          placeholder="Sélectionner" class="w-full" (onChange)="onModuleChange()" />
+        @if (hasError('module', 'required')) { <small class="error">Champ requis</small> }
+      </div>
+      <div class="form-field">
+        <label>Action <span class="req">*</span></label>
+        <p-select formControlName="action" [options]="actionOptions" optionLabel="label" optionValue="value"
+          placeholder="Sélectionner" class="w-full" (onChange)="onModuleChange()" />
+        @if (hasError('action', 'required')) { <small class="error">Champ requis</small> }
+      </div>
+    </div>
+    <div class="form-field">
+      <label>Nom de la permission <span class="req">*</span></label>
+      <input pInputText formControlName="name" placeholder="ex: USERS_READ" class="w-full" />
+      @if (hasError('name', 'required')) { <small class="error">Champ requis</small> }
+      <small class="hint">Généré automatiquement à partir du module et de l'action</small>
+    </div>
+    <div class="form-field">
+      <label>Description</label>
+      <textarea pTextarea formControlName="description" placeholder="Description de la permission..." rows="3" class="w-full" autoResize></textarea>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" severity="secondary" [text]="true" (click)="dialogVisible = false" />
+    <p-button [label]="editingPermission() ? 'Enregistrer' : 'Créer'" icon="pi pi-check"
+      (click)="savePermission()" [loading]="saving()" />
+  </ng-template>
+</p-dialog>

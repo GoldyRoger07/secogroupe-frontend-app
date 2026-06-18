@@ -1,0 +1,84 @@
+<div class="page">
+  <!-- Welcome banner -->
+  <div class="welcome-banner">
+    <div class="welcome-text">
+      <h1 class="welcome-title">Bonjour, {{ currentUser.user().username || 'Utilisateur' }}</h1>
+      <p class="welcome-date">{{ today }}</p>
+    </div>
+    <div class="welcome-icon">
+      <i class="pi pi-building"></i>
+    </div>
+  </div>
+
+  <!-- Stats grid -->
+  <div class="stats-grid">
+    @for (stat of visibleStats; track stat.label) {
+      <a [routerLink]="stat.route" class="stat-card" [style.--accent]="stat.color">
+        <div class="stat-icon" [style.background]="stat.color + '18'">
+          <i [class]="stat.icon" [style.color]="stat.color"></i>
+        </div>
+        <div class="stat-body">
+          <span class="stat-label">{{ stat.label }}</span>
+          @if (loading()) {
+            <div class="stat-skeleton"></div>
+          } @else {
+            <span class="stat-value">{{ stat.value }}</span>
+          }
+        </div>
+        <i class="pi pi-arrow-right stat-arrow" [style.color]="stat.color"></i>
+      </a>
+    }
+    @if (!loading() && visibleStats.length === 0) {
+      <div class="no-stats">
+        <i class="pi pi-lock"></i>
+        <p>Aucune statistique accessible avec vos permissions actuelles.</p>
+      </div>
+    }
+  </div>
+
+  <!-- Quick links -->
+  @if (visibleQuickLinks.length > 0) {
+    <div class="section">
+      <h2 class="section-title">Accès rapide</h2>
+      <div class="quick-grid">
+        @for (link of visibleQuickLinks; track link.label) {
+          <a [routerLink]="link.route" class="quick-card">
+            <div class="quick-icon" [style.background]="link.color + '15'" [style.color]="link.color">
+              <i [class]="link.icon"></i>
+            </div>
+            <span class="quick-label">{{ link.label }}</span>
+            <i class="pi pi-chevron-right quick-arrow"></i>
+          </a>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- Info section -->
+  <div class="section">
+    <h2 class="section-title">À propos du système</h2>
+    <div class="info-card">
+      <div class="info-row">
+        <i class="pi pi-info-circle" style="color: #0078d4;"></i>
+        <div>
+          <strong>Gestion centralisée</strong>
+          <p>Ce portail vous permet de gérer l'ensemble des utilisateurs, employés, rôles et permissions de votre organisation.</p>
+        </div>
+      </div>
+      <div class="info-row">
+        <i class="pi pi-shield" style="color: #107c10;"></i>
+        <div>
+          <strong>Sécurité par rôles</strong>
+          <p>Attribuez des rôles précis à chaque utilisateur et configurez les permissions pour un contrôle d'accès granulaire.</p>
+        </div>
+      </div>
+      <div class="info-row">
+        <i class="pi pi-id-card" style="color: #8764b8;"></i>
+        <div>
+          <strong>Gestion des employés</strong>
+          <p>Gérez les fiches employés avec photos d'identité, informations de contact et affectations aux départements.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

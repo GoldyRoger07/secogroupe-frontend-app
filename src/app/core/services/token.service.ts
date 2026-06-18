@@ -27,4 +27,23 @@ export class TokenService {
   isLoggedIn(): boolean {
     return !!this.getAccessToken();
   }
+
+  getUsername(): string {
+    return this.decodePayload()?.sub ?? '';
+  }
+
+  getAuthorities(): string[] {
+    return this.decodePayload()?.authorities ?? [];
+  }
+
+  private decodePayload(): { sub?: string; authorities?: string[] } | null {
+    const token = this.getAccessToken();
+    if (!token) return null;
+    try {
+      const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+      return JSON.parse(atob(b64));
+    } catch {
+      return null;
+    }
+  }
 }

@@ -1,0 +1,179 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">
+      <i class="pi pi-shield page-icon" style="color: #8764b8;"></i>
+      <div>
+        <h1>Rôles</h1>
+        <span class="page-subtitle">Gestion des rôles et accès</span>
+      </div>
+    </div>
+    <p-button label="Ajouter" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <div class="table-card">
+    <div class="toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText [(ngModel)]="searchQuery" (input)="onSearch()"
+          placeholder="Rechercher un rôle..." class="search-input" />
+      </p-iconfield>
+
+      <div class="view-toggle">
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'table'" (click)="setViewMode('table')" title="Vue tableau">
+          <i class="pi pi-list"></i>
+        </button>
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Vue grille">
+          <i class="pi pi-th-large"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <span class="records-info">{{ totalRecords() }} résultat(s)</span>
+      </div>
+    </div>
+
+    <!-- ── TABLE VIEW ──────────────────────────────────── -->
+    @if (viewMode() === 'table') {
+      <p-table
+        [value]="roles()"
+        [lazy]="true" [loading]="loading()"
+        (onLazyLoad)="loadData($event)"
+        [totalRecords]="totalRecords()"
+        [rows]="pageSize" [paginator]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} à {last} sur {totalRecords} rôles"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-sm p-datatable-striped "
+        dataKey="id"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name" style="min-width: 160px">Nom du rôle <p-sortIcon field="name" /></th>
+            <th style="min-width: 250px">Description</th>
+            <th pSortableColumn="permissionCount" style="min-width: 160px">Permissions <p-sortIcon field="permissionCount" /></th>
+            <th pSortableColumn="createdAt" style="min-width: 140px">Créé le <p-sortIcon field="createdAt" /></th>
+            <th style="width: 110px; text-align: center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-role>
+          <tr>
+            <td>
+              <div class="role-name-cell">
+                <div class="role-icon"><i class="pi pi-shield"></i></div>
+                <span class="role-name">{{ role.name }}</span>
+              </div>
+            </td>
+            <td class="text-secondary desc-cell">{{ role.description || '—' }}</td>
+            <td>
+              <div class="perm-count">
+                <span class="perm-badge">{{ role.permissionCount }}</span>
+                <span class="text-secondary">permission(s)</span>
+              </div>
+            </td>
+            <td class="text-secondary">{{ role.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="action-btns">
+                <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="secondary"
+                  (click)="openDialog(role)" pTooltip="Modifier" tooltipPosition="top" />
+                <p-button icon="pi pi-trash" [text]="true" [rounded]="true" size="small" severity="danger"
+                  (click)="confirmDelete(role)" pTooltip="Supprimer" tooltipPosition="top" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr><td colspan="5"><div class="empty-state">
+            <i class="pi pi-shield"></i><p>Aucun rôle trouvé</p>
+          </div></td></tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody">
+          @for (r of [1,2,3,4,5,6]; track r) {
+            <tr>@for (c of [1,2,3,4,5]; track c) { <td><p-skeleton height="1.4rem" /></td> }</tr>
+          }
+        </ng-template>
+      </p-table>
+    }
+
+    <!-- ── GRID VIEW ───────────────────────────────────── -->
+    @if (viewMode() === 'grid') {
+      @if (loading()) {
+        <div class="card-grid">
+          @for (n of [1,2,3,4,5,6,7,8,9,10,11,12]; track n) {
+            <div class="entity-card skeleton-card">
+              <p-skeleton shape="circle" size="3rem" styleClass="mb-3" />
+              <p-skeleton height="1rem" width="65%" styleClass="mb-2" />
+              <p-skeleton height="0.8rem" width="85%" styleClass="mb-2" />
+              <p-skeleton height="1.5rem" width="40%" />
+            </div>
+          }
+        </div>
+      } @else if (roles().length === 0) {
+        <div class="empty-state" style="padding: 56px;">
+          <i class="pi pi-shield"></i><p>Aucun rôle trouvé</p>
+        </div>
+      } @else {
+        <div class="card-grid">
+          @for (role of roles(); track role.id) {
+            <div class="entity-card role-card-item">
+              <div class="card-header-accent" style="background: #8764b8;"></div>
+              <div class="role-card-icon">
+                <i class="pi pi-shield"></i>
+              </div>
+              <div class="card-name role-code">{{ role.name }}</div>
+              <div class="card-sub">{{ role.description || 'Aucune description' }}</div>
+              <div class="role-perm-pill">
+                <i class="pi pi-lock"></i>
+                <span>{{ role.permissionCount }} permission(s)</span>
+              </div>
+              <div class="card-meta">
+                <i class="pi pi-calendar"></i>
+                {{ role.createdAt | date:'dd/MM/yyyy' }}
+              </div>
+              <div class="card-footer-actions">
+                <p-button icon="pi pi-pencil" label="Modifier" [text]="true" size="small" severity="secondary"
+                  (click)="openDialog(role)" />
+                <p-button icon="pi pi-trash" label="Supprimer" [text]="true" size="small" severity="danger"
+                  (click)="confirmDelete(role)" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+      <div class="grid-paginator">
+        <p-paginator [first]="gridFirst" [rows]="gridRows" [totalRecords]="totalRecords()"
+          [rowsPerPageOptions]="[12, 24, 48]" (onPageChange)="onGridPageChange($event)"
+          [showCurrentPageReport]="true" currentPageReportTemplate="{first} à {last} sur {totalRecords}" />
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Dialog -->
+<p-dialog [(visible)]="dialogVisible"
+  [header]="editingRole() ? 'Modifier le rôle' : 'Nouveau rôle'"
+  [style]="{ width: '560px' }" [modal]="true" [draggable]="false" [resizable]="false">
+  <form [formGroup]="form" class="dialog-form">
+    <div class="form-field">
+      <label>Nom du rôle <span class="req">*</span></label>
+      <input pInputText formControlName="name" placeholder="ex: MANAGER" class="w-full" />
+      @if (hasError('name', 'required')) { <small class="error">Champ requis</small> }
+      @if (hasError('name', 'minlength')) { <small class="error">2 caractères minimum</small> }
+    </div>
+    <div class="form-field">
+      <label>Description</label>
+      <textarea pTextarea formControlName="description" placeholder="Description du rôle..." rows="3" class="w-full" autoResize></textarea>
+    </div>
+    <div class="form-field">
+      <label>Permissions attribuées</label>
+      <p-multiselect formControlName="permissionIds" [options]="permissionOptions" optionLabel="label" optionValue="value"
+        placeholder="Sélectionner des permissions" display="chip" [filter]="true" filterPlaceholder="Rechercher..."
+        class="w-full" [maxSelectedLabels]="4" selectedItemsLabel="{0} permissions sélectionnées" />
+      <small class="hint">{{ (form.get('permissionIds')?.value?.length ?? 0) }} permission(s) sélectionnée(s)</small>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" severity="secondary" [text]="true" (click)="dialogVisible = false" />
+    <p-button [label]="editingRole() ? 'Enregistrer' : 'Créer'" icon="pi pi-check"
+      (click)="saveRole()" [loading]="saving()" />
+  </ng-template>
+</p-dialog>

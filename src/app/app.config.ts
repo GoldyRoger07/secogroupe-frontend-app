@@ -1,5 +1,6 @@
 import { ApplicationConfig, provideBrowserGlobalErrorListeners } from '@angular/core';
 import { provideRouter } from '@angular/router';
+import { MessageService, ConfirmationService } from 'primeng/api';
 import { providePrimeNG } from 'primeng/config';
 import { routes } from './app.routes';
 import { MyPreset } from './mypreset';
@@ -21,6 +22,8 @@ export const appConfig: ApplicationConfig = {
       }
     }),
     provideHttpClient(withInterceptors([authInterceptor])),
+    MessageService,
+    ConfirmationService,
     provideTranslateService({
       fallbackLang: 'en',
       loader: provideTranslateHttpLoader({

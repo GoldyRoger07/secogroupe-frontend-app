@@ -1,0 +1,235 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">
+      <i class="pi pi-id-card page-icon" style="color: #107c10;"></i>
+      <div>
+        <h1>Employés</h1>
+        <span class="page-subtitle">Gestion des fiches employés</span>
+      </div>
+    </div>
+    <p-button label="Ajouter" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <div class="table-card">
+    <div class="toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText [(ngModel)]="searchQuery" (input)="onSearch()"
+          placeholder="Rechercher par nom, poste, département..." class="search-input" />
+      </p-iconfield>
+
+      <div class="view-toggle">
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'table'" (click)="setViewMode('table')" title="Vue tableau">
+          <i class="pi pi-list"></i>
+        </button>
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Vue grille">
+          <i class="pi pi-th-large"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <span class="records-info">{{ totalRecords() }} résultat(s)</span>
+      </div>
+    </div>
+
+    <!-- ── TABLE VIEW ──────────────────────────────────── -->
+    @if (viewMode() === 'table') {
+      <!-- p-datatable-gridlines -->
+      <p-table
+        [value]="employees()"
+        [lazy]="true" [loading]="loading()"
+        (onLazyLoad)="loadData($event)"
+        [totalRecords]="totalRecords()"
+        [rows]="pageSize" [paginator]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} à {last} sur {totalRecords} employés"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-sm p-datatable-striped "
+        dataKey="id"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th style="width: 60px">Photo</th>
+            <th pSortableColumn="lastName" style="min-width: 180px">Nom complet <p-sortIcon field="lastName" /></th>
+            <th pSortableColumn="email" style="min-width: 210px">Email <p-sortIcon field="email" /></th>
+            <th pSortableColumn="position" style="min-width: 150px">Poste <p-sortIcon field="position" /></th>
+            <th pSortableColumn="department" style="min-width: 130px">Département <p-sortIcon field="department" /></th>
+            <th pSortableColumn="status" style="min-width: 120px">Statut <p-sortIcon field="status" /></th>
+            <th pSortableColumn="createdAt" style="min-width: 130px">Créé le <p-sortIcon field="createdAt" /></th>
+            <th style="width: 110px; text-align: center">Actions</th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-emp>
+          <tr>
+            <td>
+              <div class="emp-avatar">
+                @if (emp.photoUrl) { <img [src]="emp.photoUrl" [alt]="emp.firstName" class="emp-photo" /> }
+                @else { <div class="emp-initials">{{ getInitials(emp) }}</div> }
+              </div>
+            </td>
+            <td><span class="full-name">{{ emp.firstName }} {{ emp.lastName }}</span></td>
+            <td class="text-secondary">{{ emp.email }}</td>
+            <td>{{ emp.position }}</td>
+            <td><p-tag [value]="emp.department" severity="info" [rounded]="true" /></td>
+            <td><p-tag [value]="getStatusLabel(emp.status)" [severity]="getStatusSeverity(emp.status)" /></td>
+            <td class="text-secondary">{{ emp.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="action-btns">
+                <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="secondary"
+                  (click)="openDialog(emp)" pTooltip="Modifier" tooltipPosition="top" />
+                <p-button icon="pi pi-trash" [text]="true" [rounded]="true" size="small" severity="danger"
+                  (click)="confirmDelete(emp)" pTooltip="Supprimer" tooltipPosition="top" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="emptymessage">
+          <tr><td colspan="8"><div class="empty-state">
+            <i class="pi pi-id-card"></i><p>Aucun employé trouvé</p>
+            <small>Essayez de modifier vos critères de recherche</small>
+          </div></td></tr>
+        </ng-template>
+        <ng-template pTemplate="loadingbody">
+          @for (r of [1,2,3,4,5,6,7,8]; track r) {
+            <tr>@for (c of [1,2,3,4,5,6,7,8]; track c) { <td><p-skeleton height="1.4rem" /></td> }</tr>
+          }
+        </ng-template>
+      </p-table>
+    }
+
+    <!-- ── GRID VIEW ───────────────────────────────────── -->
+    @if (viewMode() === 'grid') {
+      @if (loading()) {
+        <div class="card-grid card-grid-3">
+          @for (n of [1,2,3,4,5,6,7,8,9]; track n) {
+            <div class="entity-card skeleton-card">
+              <p-skeleton shape="circle" size="4rem" styleClass="mb-3" />
+              <p-skeleton height="1rem" width="70%" styleClass="mb-2" />
+              <p-skeleton height="0.8rem" width="90%" styleClass="mb-2" />
+              <p-skeleton height="1.5rem" width="60%" />
+            </div>
+          }
+        </div>
+      } @else if (employees().length === 0) {
+        <div class="empty-state" style="padding: 56px;">
+          <i class="pi pi-id-card"></i><p>Aucun employé trouvé</p>
+        </div>
+      } @else {
+        <div class="card-grid card-grid-3">
+          @for (emp of employees(); track emp.id) {
+            <div class="entity-card emp-card-item">
+              <div class="card-header-accent" style="background: #107c10;"></div>
+
+              <div class="emp-card-photo">
+                @if (emp.photoUrl) {
+                  <img [src]="emp.photoUrl" [alt]="emp.firstName" class="emp-card-img" />
+                } @else {
+                  <div class="emp-card-initials" style="background: #107c10;">{{ getInitials(emp) }}</div>
+                }
+              </div>
+
+              <div class="card-name">{{ emp.firstName }} {{ emp.lastName }}</div>
+              <div class="card-sub card-position">
+                <i class="pi pi-briefcase"></i> {{ emp.position }}
+              </div>
+              <div class="card-badges">
+                <p-tag [value]="emp.department" severity="info" [rounded]="true" />
+                <p-tag [value]="getStatusLabel(emp.status)" [severity]="getStatusSeverity(emp.status)" />
+              </div>
+              <div class="emp-card-contacts">
+                <span><i class="pi pi-envelope"></i> {{ emp.email }}</span>
+                <span><i class="pi pi-phone"></i> {{ emp.phone }}</span>
+              </div>
+              <div class="card-footer-actions">
+                <p-button icon="pi pi-pencil" label="Modifier" [text]="true" size="small" severity="secondary"
+                  (click)="openDialog(emp)" />
+                <p-button icon="pi pi-trash" label="Supprimer" [text]="true" size="small" severity="danger"
+                  (click)="confirmDelete(emp)" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+      <div class="grid-paginator">
+        <p-paginator [first]="gridFirst" [rows]="gridRows" [totalRecords]="totalRecords()"
+          [rowsPerPageOptions]="[9, 18, 36]" (onPageChange)="onGridPageChange($event)"
+          [showCurrentPageReport]="true" currentPageReportTemplate="{first} à {last} sur {totalRecords}" />
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Dialog -->
+<p-dialog [(visible)]="dialogVisible"
+  [header]="editingEmployee() ? 'Modifier l\'employé' : 'Nouvel employé'"
+  [style]="{ width: '640px' }" [modal]="true" [draggable]="false" [resizable]="false">
+  <form [formGroup]="form" class="dialog-form">
+    <div class="form-with-photo">
+      <div class="photo-section">
+        <div class="photo-preview-wrapper" (click)="photoInput.click()">
+          @if (photoPreview()) {
+            <img [src]="photoPreview()!" alt="Photo" class="photo-img" />
+          } @else {
+            <div class="photo-placeholder"><i class="pi pi-camera"></i><span>Ajouter une photo</span></div>
+          }
+          <div class="photo-overlay"><i class="pi pi-camera"></i></div>
+        </div>
+        @if (photoPreview()) {
+          <button type="button" class="remove-photo-btn" (click)="removePhoto()">
+            <i class="pi pi-times"></i> Supprimer
+          </button>
+        }
+        <input #photoInput type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+        <span class="photo-hint">JPG, PNG – max 5 Mo</span>
+      </div>
+      <div class="form-fields">
+        <div class="form-row two-col">
+          <div class="form-field">
+            <label>Prénom <span class="req">*</span></label>
+            <input pInputText formControlName="firstName" placeholder="Prénom" class="w-full" />
+            @if (hasError('firstName', 'required')) { <small class="error">Champ requis</small> }
+          </div>
+          <div class="form-field">
+            <label>Nom <span class="req">*</span></label>
+            <input pInputText formControlName="lastName" placeholder="Nom de famille" class="w-full" />
+            @if (hasError('lastName', 'required')) { <small class="error">Champ requis</small> }
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Email professionnel <span class="req">*</span></label>
+          <input pInputText formControlName="email" placeholder="email@secogroupe.com" type="email" class="w-full" />
+          @if (hasError('email', 'required')) { <small class="error">Champ requis</small> }
+          @if (hasError('email', 'email')) { <small class="error">Email invalide</small> }
+        </div>
+        <div class="form-field">
+          <label>Téléphone <span class="req">*</span></label>
+          <input pInputText formControlName="phone" placeholder="+33 6 XX XX XX XX" class="w-full" />
+          @if (hasError('phone', 'required')) { <small class="error">Champ requis</small> }
+        </div>
+        <div class="form-row two-col">
+          <div class="form-field">
+            <label>Poste <span class="req">*</span></label>
+            <input pInputText formControlName="position" placeholder="ex: Développeur" class="w-full" />
+            @if (hasError('position', 'required')) { <small class="error">Champ requis</small> }
+          </div>
+          <div class="form-field">
+            <label>Département <span class="req">*</span></label>
+            <p-select formControlName="department" [options]="departmentOptions" optionLabel="label" optionValue="value"
+              placeholder="Sélectionner" class="w-full" />
+            @if (hasError('department', 'required')) { <small class="error">Champ requis</small> }
+          </div>
+        </div>
+        <div class="form-field">
+          <label>Statut <span class="req">*</span></label>
+          <p-select formControlName="status" [options]="statusOptions" optionLabel="label" optionValue="value"
+            placeholder="Sélectionner" class="w-full" />
+        </div>
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" severity="secondary" [text]="true" (click)="dialogVisible = false" />
+    <p-button [label]="editingEmployee() ? 'Enregistrer' : 'Créer'" icon="pi pi-check"
+      (click)="saveEmployee()" [loading]="saving()" />
+  </ng-template>
+</p-dialog>

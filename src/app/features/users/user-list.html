@@ -1,0 +1,223 @@
+<div class="page">
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-title">
+      <i class="pi pi-users page-icon"></i>
+      <div>
+        <h1>Utilisateurs</h1>
+        <span class="page-subtitle">Gestion des comptes utilisateurs</span>
+      </div>
+    </div>
+    <p-button label="Ajouter" icon="pi pi-plus" (click)="openDialog()" />
+  </div>
+
+  <div class="table-card">
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <p-iconfield>
+        <p-inputicon styleClass="pi pi-search" />
+        <input pInputText [(ngModel)]="searchQuery" (input)="onSearch()"
+          placeholder="Rechercher par nom, email, rôle..." class="search-input" />
+      </p-iconfield>
+
+      <!-- View toggle -->
+      <div class="view-toggle">
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'table'" (click)="setViewMode('table')" title="Vue tableau">
+          <i class="pi pi-list"></i>
+        </button>
+        <button class="vt-btn" [class.vt-active]="viewMode() === 'grid'" (click)="setViewMode('grid')" title="Vue grille">
+          <i class="pi pi-th-large"></i>
+        </button>
+      </div>
+
+      <div class="toolbar-right">
+        <span class="records-info">{{ totalRecords() }} résultat(s)</span>
+      </div>
+    </div>
+
+    <!-- ── TABLE VIEW ──────────────────────────────────── -->
+    @if (viewMode() === 'table') {
+      <p-table
+        [value]="users()"
+        [lazy]="true"
+        [loading]="loading()"
+        (onLazyLoad)="loadData($event)"
+        [totalRecords]="totalRecords()"
+        [rows]="pageSize"
+        [paginator]="true"
+        [showCurrentPageReport]="true"
+        currentPageReportTemplate="{first} à {last} sur {totalRecords} utilisateurs"
+        [rowsPerPageOptions]="[10, 25, 50]"
+        styleClass="p-datatable-sm p-datatable-striped "
+        dataKey="id"
+        [sortMode]="'single'"
+      >
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="username" style="min-width: 180px">Utilisateur <p-sortIcon field="username" /></th>
+            <th pSortableColumn="email" style="min-width: 220px">Email <p-sortIcon field="email" /></th>
+            <th pSortableColumn="roleName" style="min-width: 130px">Rôle <p-sortIcon field="roleName" /></th>
+            <th pSortableColumn="status" style="min-width: 120px">Statut <p-sortIcon field="status" /></th>
+            <th pSortableColumn="createdAt" style="min-width: 140px">Créé le <p-sortIcon field="createdAt" /></th>
+            <th style="width: 110px; text-align: center">Actions</th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-user>
+          <tr>
+            <td>
+              <div class="user-cell">
+                <div class="avatar">{{ getInitial(user.username) }}</div>
+                <span class="username">{{ user.username }}</span>
+              </div>
+            </td>
+            <td class="text-secondary">{{ user.email }}</td>
+            <td><p-tag [value]="user.roleName" [severity]="getRoleSeverity(user.roleName)" [rounded]="true" /></td>
+            <td><p-tag [value]="getStatusLabel(user.status)" [severity]="getStatusSeverity(user.status)" /></td>
+            <td class="text-secondary">{{ user.createdAt | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <div class="action-btns">
+                <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" size="small" severity="secondary"
+                  (click)="openDialog(user)" pTooltip="Modifier" tooltipPosition="top" />
+                <p-button icon="pi pi-trash" [text]="true" [rounded]="true" size="small" severity="danger"
+                  (click)="confirmDelete(user)" pTooltip="Supprimer" tooltipPosition="top" />
+              </div>
+            </td>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage">
+          <tr><td colspan="6">
+            <div class="empty-state">
+              <i class="pi pi-users"></i>
+              <p>Aucun utilisateur trouvé</p>
+              <small>Essayez de modifier vos critères de recherche</small>
+            </div>
+          </td></tr>
+        </ng-template>
+
+        <ng-template pTemplate="loadingbody">
+          @for (r of [1,2,3,4,5,6,7,8]; track r) {
+            <tr>@for (c of [1,2,3,4,5,6]; track c) { <td><p-skeleton height="1.4rem" /></td> }</tr>
+          }
+        </ng-template>
+      </p-table>
+    }
+
+    <!-- ── GRID VIEW ───────────────────────────────────── -->
+    @if (viewMode() === 'grid') {
+      @if (loading()) {
+        <div class="card-grid">
+          @for (n of [1,2,3,4,5,6,7,8,9,10,11,12]; track n) {
+            <div class="entity-card skeleton-card">
+              <p-skeleton shape="circle" size="3.5rem" styleClass="mb-3" />
+              <p-skeleton height="1rem" width="65%" styleClass="mb-2" />
+              <p-skeleton height="0.8rem" width="85%" styleClass="mb-2" />
+              <p-skeleton height="1.5rem" width="50%" />
+            </div>
+          }
+        </div>
+      } @else if (users().length === 0) {
+        <div class="empty-state" style="padding: 56px;">
+          <i class="pi pi-users"></i>
+          <p>Aucun utilisateur trouvé</p>
+          <small>Essayez de modifier vos critères de recherche</small>
+        </div>
+      } @else {
+        <div class="card-grid">
+          @for (user of users(); track user.id) {
+            <div class="entity-card user-card-item">
+              <div class="card-header-accent" style="background: #0078d4;"></div>
+              <div class="card-avatar-circle" style="background: #0078d4;">
+                {{ getInitial(user.username) }}
+              </div>
+              <div class="card-name">{{ user.username }}</div>
+              <div class="card-sub">{{ user.email }}</div>
+              <div class="card-badges">
+                <p-tag [value]="user.roleName" [severity]="getRoleSeverity(user.roleName)" [rounded]="true" />
+                <p-tag [value]="getStatusLabel(user.status)" [severity]="getStatusSeverity(user.status)" />
+              </div>
+              <div class="card-meta">
+                <i class="pi pi-calendar"></i>
+                {{ user.createdAt | date:'dd/MM/yyyy' }}
+              </div>
+              <div class="card-footer-actions">
+                <p-button icon="pi pi-pencil" label="Modifier" [text]="true" size="small" severity="secondary"
+                  (click)="openDialog(user)" />
+                <p-button icon="pi pi-trash" label="Supprimer" [text]="true" size="small" severity="danger"
+                  (click)="confirmDelete(user)" />
+              </div>
+            </div>
+          }
+        </div>
+      }
+      <div class="grid-paginator">
+        <p-paginator
+          [first]="gridFirst"
+          [rows]="gridRows"
+          [totalRecords]="totalRecords()"
+          [rowsPerPageOptions]="[12, 24, 48]"
+          (onPageChange)="onGridPageChange($event)"
+          [showCurrentPageReport]="true"
+          currentPageReportTemplate="{first} à {last} sur {totalRecords}"
+        />
+      </div>
+    }
+  </div>
+</div>
+
+<!-- Create / Edit Dialog -->
+<p-dialog
+  [(visible)]="dialogVisible"
+  [header]="editingUser() ? 'Modifier l\'utilisateur' : 'Nouvel utilisateur'"
+  [style]="{ width: '500px' }"
+  [modal]="true" [draggable]="false" [resizable]="false"
+>
+  <form [formGroup]="form" class="dialog-form">
+    <div class="form-row">
+      <div class="form-field">
+        <label>Nom d'utilisateur <span class="req">*</span></label>
+        <input pInputText formControlName="username" placeholder="ex: jean.dupont" class="w-full" />
+        @if (hasError('username', 'required')) { <small class="error">Champ requis</small> }
+        @if (hasError('username', 'minlength')) { <small class="error">3 caractères minimum</small> }
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Adresse email <span class="req">*</span></label>
+        <input pInputText formControlName="email" placeholder="ex: jean@secogroupe.com" type="email" class="w-full" />
+        @if (hasError('email', 'required')) { <small class="error">Champ requis</small> }
+        @if (hasError('email', 'email')) { <small class="error">Email invalide</small> }
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-field">
+        <label>Mot de passe
+          @if (!editingUser()) { <span class="req">*</span> }
+          @else { <span class="optional">(laisser vide pour ne pas modifier)</span> }
+        </label>
+        <p-password formControlName="password" [feedback]="false" [toggleMask]="true"
+          placeholder="Mot de passe" styleClass="w-full" inputStyleClass="w-full" />
+        @if (hasError('password', 'required')) { <small class="error">Champ requis</small> }
+        @if (hasError('password', 'minlength')) { <small class="error">8 caractères minimum</small> }
+      </div>
+    </div>
+    <div class="form-row two-col">
+      <div class="form-field">
+        <label>Rôle <span class="req">*</span></label>
+        <p-select formControlName="roleName" [options]="roleOptions" optionLabel="label" optionValue="value"
+          placeholder="Sélectionner" class="w-full" />
+      </div>
+      <div class="form-field">
+        <label>Statut <span class="req">*</span></label>
+        <p-select formControlName="status" [options]="statusOptions" optionLabel="label" optionValue="value"
+          placeholder="Sélectionner" class="w-full" />
+      </div>
+    </div>
+  </form>
+  <ng-template pTemplate="footer">
+    <p-button label="Annuler" severity="secondary" [text]="true" (click)="dialogVisible = false" />
+    <p-button [label]="editingUser() ? 'Enregistrer' : 'Créer'" icon="pi pi-check"
+      (click)="saveUser()" [loading]="saving()" />
+  </ng-template>
+</p-dialog>

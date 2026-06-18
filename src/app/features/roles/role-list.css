@@ -1,0 +1,119 @@
+/* ── Grid card ── */
+.role-card-item .card-name { margin-top: 4px; }
+
+.role-card-icon {
+  width: 56px;
+  height: 56px;
+  background: #8764b810;
+  border-radius: 50%;
+  border: 2px solid #8764b830;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8764b8;
+  font-size: 22px;
+  margin: 18px 0 10px;
+  flex-shrink: 0;
+}
+
+.role-code {
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.5px;
+  font-size: 14px;
+}
+
+.role-perm-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #8764b810;
+  color: #8764b8;
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 12px;
+  margin: 8px 0 2px;
+}
+
+/* ── Table ── */
+.role-name-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.role-icon {
+  width: 30px;
+  height: 30px;
+  background: #8764b810;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #8764b8;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.role-name {
+  font-weight: 600;
+  font-size: 13px;
+  font-family: 'Consolas', monospace;
+  letter-spacing: 0.3px;
+}
+
+.desc-cell {
+  max-width: 280px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.perm-count {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.perm-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 22px;
+  background: #8764b8;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 600;
+  border-radius: 11px;
+  padding: 0 6px;
+}
+
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.req { color: #d13438; }
+.error { color: #d13438; font-size: 12px; }
+.hint { color: #605e5c; font-size: 12px; }

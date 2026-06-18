@@ -1,0 +1,579 @@
+<div class="page">
+  <div class="page-header">
+    <div class="page-title">
+      <i class="pi pi-cog page-icon" style="color: #605e5c;"></i>
+      <div>
+        <h1>Paramètres</h1>
+        <span class="page-subtitle">Configuration et préférences de l'application</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-shell">
+    <!-- ── Left nav ───────────────────────────────────────── -->
+    <aside class="settings-nav">
+      @for (s of sections; track s.id) {
+        <button
+          class="snav-item"
+          [class.active]="activeSection() === s.id"
+          (click)="navigateTo(s.id)"
+        >
+          <i [class]="s.icon + ' snav-icon'"></i>
+          <span>{{ s.label }}</span>
+        </button>
+      }
+    </aside>
+
+    <!-- ── Section content ───────────────────────────────── -->
+    <div class="settings-content">
+
+      <!-- ════════════ GÉNÉRAL ════════════ -->
+      @if (activeSection() === 'general') {
+        <div class="section-title-row">
+          <i class="pi pi-building section-icon"></i>
+          <div>
+            <h2>Informations générales</h2>
+            <p>Identité et configuration globale de l'organisation</p>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Identité de l'entreprise</div>
+          <div class="block-body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Nom de l'entreprise</label>
+                <input pInputText [(ngModel)]="general.companyName" placeholder="Nom de l'entreprise" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Site web</label>
+                <input pInputText [(ngModel)]="general.website" placeholder="www.exemple.com" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Email de contact</label>
+                <input pInputText [(ngModel)]="general.companyEmail" placeholder="contact@exemple.com" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Téléphone</label>
+                <input pInputText [(ngModel)]="general.companyPhone" placeholder="+33 1 00 00 00 00" class="w-full" />
+              </div>
+              <div class="form-field full-width">
+                <label>Adresse</label>
+                <input pInputText [(ngModel)]="general.address" placeholder="Adresse complète" class="w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Localisation &amp; formats</div>
+          <div class="block-body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Langue de l'interface</label>
+                <p-select [(ngModel)]="general.language" [options]="languageOptions"
+                  optionLabel="label" optionValue="value" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Fuseau horaire</label>
+                <p-select [(ngModel)]="general.timezone" [options]="timezoneOptions"
+                  optionLabel="label" optionValue="value" class="w-full" />
+              </div>
+              <div class="form-field full-width">
+                <label>Format de date</label>
+                <div class="radio-group">
+                  @for (opt of dateFormatOptions; track opt.value) {
+                    <label class="radio-option">
+                      <p-radiobutton [(ngModel)]="general.dateFormat" [value]="opt.value" />
+                      <span>{{ opt.label }}</span>
+                    </label>
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <p-button label="Enregistrer" icon="pi pi-check" (click)="save('general')" [loading]="saving()" />
+        </div>
+      }
+
+      <!-- ════════════ PROFIL ════════════ -->
+      @if (activeSection() === 'profile') {
+        <div class="section-title-row">
+          <i class="pi pi-user section-icon"></i>
+          <div>
+            <h2>Mon profil</h2>
+            <p>Informations personnelles et accès au compte</p>
+          </div>
+        </div>
+
+        @if (loading()) {
+          <div class="settings-block">
+            <div class="block-body" style="display:flex;gap:20px;align-items:center;">
+              <p-skeleton shape="circle" size="88px" />
+              <div style="flex:1;display:flex;flex-direction:column;gap:8px;">
+                <p-skeleton height="1rem" width="40%" />
+                <p-skeleton height="0.8rem" width="60%" />
+              </div>
+            </div>
+          </div>
+          <div class="settings-block">
+            <div class="block-body" style="display:flex;flex-direction:column;gap:12px;">
+              @for (n of [1,2,3,4]; track n) { <p-skeleton height="2.4rem" /> }
+            </div>
+          </div>
+        } @else {
+
+        <div class="settings-block">
+          <div class="block-header">Photo de profil</div>
+          <div class="block-body">
+            <div class="profile-photo-row">
+              <div class="profile-photo-wrapper" (click)="photoInput.click()">
+                @if (photoPreview()) {
+                  <img [src]="photoPreview()!" alt="Photo de profil" class="profile-photo-img" />
+                } @else {
+                  <div class="profile-photo-placeholder">
+                    <span class="profile-initial">{{ currentUser.user().initial }}</span>
+                  </div>
+                }
+                <div class="profile-photo-overlay"><i class="pi pi-camera"></i></div>
+              </div>
+              <input #photoInput type="file" accept="image/*" hidden (change)="onPhotoSelected($event)" />
+              <div class="profile-photo-info">
+                <strong>{{ profile.firstName || currentUser.user().username }}</strong>
+                <p>PNG, JPG ou GIF — max 5 Mo<br>Taille recommandée : 200×200 px</p>
+                <div class="photo-btns">
+                  <p-button label="Changer la photo" icon="pi pi-upload" size="small" (click)="photoInput.click()" />
+                  @if (photoPreview()) {
+                    <p-button label="Supprimer" icon="pi pi-times" size="small" severity="danger" [text]="true" (click)="removePhoto()" />
+                  }
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Informations du compte</div>
+          <div class="block-body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Nom d'utilisateur</label>
+                <input pInputText [value]="profile.username || currentUser.user().username" disabled class="w-full input-readonly" />
+                <small class="hint">Le nom d'utilisateur ne peut pas être modifié</small>
+              </div>
+              <div class="form-field">
+                <label>Adresse email</label>
+                <input pInputText [(ngModel)]="profile.email" placeholder="email@secogroupe.com" class="w-full" />
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Informations personnelles</div>
+          <div class="block-body">
+            <div class="form-grid">
+              <div class="form-field">
+                <label>Prénom</label>
+                <input pInputText [(ngModel)]="profile.firstName" placeholder="Prénom" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Nom de famille</label>
+                <input pInputText [(ngModel)]="profile.lastName" placeholder="Nom" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Téléphone</label>
+                <input pInputText [(ngModel)]="profile.phone" placeholder="+33 6 00 00 00 00" class="w-full" />
+              </div>
+              <div class="form-field">
+                <label>Poste occupé</label>
+                <input pInputText [(ngModel)]="profile.position" placeholder="ex: Administrateur système" class="w-full" />
+              </div>
+              <div class="form-field full-width">
+                <label>Biographie</label>
+                <textarea pTextarea [(ngModel)]="profile.bio" rows="3" placeholder="Quelques mots sur vous..." class="w-full" autoResize></textarea>
+              </div>
+            </div>
+            <div class="section-actions" style="margin-top: 0; padding-top: 16px;">
+              <p-button label="Enregistrer le profil" icon="pi pi-check" (click)="save('profile')" [loading]="saving()" />
+            </div>
+          </div>
+        </div>
+
+        } <!-- end @else -->
+
+        <div class="settings-block">
+          <div class="block-header">Changer le mot de passe</div>
+          <div class="block-body">
+            <form [formGroup]="passwordForm" class="form-grid">
+              <div class="form-field full-width">
+                <label>Mot de passe actuel <span class="req">*</span></label>
+                <p-password formControlName="currentPassword" [feedback]="false" [toggleMask]="true"
+                  placeholder="Mot de passe actuel" styleClass="w-full" inputStyleClass="w-full" />
+                @if (hasPassError('currentPassword', 'required')) { <small class="error">Champ requis</small> }
+              </div>
+              <div class="form-field">
+                <label>Nouveau mot de passe <span class="req">*</span></label>
+                <p-password formControlName="newPassword" [toggleMask]="true"
+                  placeholder="Nouveau mot de passe" styleClass="w-full" inputStyleClass="w-full"
+                  promptLabel="Saisissez un mot de passe" weakLabel="Faible" mediumLabel="Moyen" strongLabel="Fort" />
+                @if (hasPassError('newPassword', 'required')) { <small class="error">Champ requis</small> }
+                @if (hasPassError('newPassword', 'minlength')) { <small class="error">8 caractères minimum</small> }
+              </div>
+              <div class="form-field">
+                <label>Confirmer le mot de passe <span class="req">*</span></label>
+                <p-password formControlName="confirmPassword" [feedback]="false" [toggleMask]="true"
+                  placeholder="Confirmer" styleClass="w-full" inputStyleClass="w-full" />
+                @if (hasPassError('confirmPassword', 'required')) { <small class="error">Champ requis</small> }
+              </div>
+            </form>
+            <div class="section-actions" style="margin-top: 0; padding-top: 16px;">
+              <p-button label="Changer le mot de passe" icon="pi pi-lock" severity="secondary" (click)="savePassword()" [loading]="saving()" />
+            </div>
+          </div>
+        </div>
+      }
+
+      <!-- ════════════ APPARENCE ════════════ -->
+      @if (activeSection() === 'appearance') {
+        <div class="section-title-row">
+          <i class="pi pi-palette section-icon"></i>
+          <div>
+            <h2>Apparence</h2>
+            <p>Personnalisez l'interface selon vos préférences visuelles</p>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Thème</div>
+          <div class="block-body">
+            <div class="theme-cards">
+              <div class="theme-card" [class.selected]="appearance.theme === 'light'" (click)="appearance.theme = 'light'">
+                <div class="theme-preview">
+                  <div class="tp-sidebar tp-sidebar-light"></div>
+                  <div class="tp-body tp-body-light">
+                    <div class="tp-bar tp-bar-light"></div>
+                    <div class="tp-lines">
+                      <div class="tp-line"></div><div class="tp-line tp-short"></div><div class="tp-line"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="theme-label">
+                  @if (appearance.theme === 'light') { <i class="pi pi-check-circle" style="color:#0078d4;"></i> }
+                  Clair
+                </div>
+              </div>
+
+              <div class="theme-card" [class.selected]="appearance.theme === 'dark'" (click)="appearance.theme = 'dark'">
+                <div class="theme-preview">
+                  <div class="tp-sidebar tp-sidebar-dark"></div>
+                  <div class="tp-body tp-body-dark">
+                    <div class="tp-bar tp-bar-dark"></div>
+                    <div class="tp-lines">
+                      <div class="tp-line tp-dark-line"></div><div class="tp-line tp-short tp-dark-line"></div><div class="tp-line tp-dark-line"></div>
+                    </div>
+                  </div>
+                </div>
+                <div class="theme-label">
+                  @if (appearance.theme === 'dark') { <i class="pi pi-check-circle" style="color:#0078d4;"></i> }
+                  Sombre
+                </div>
+              </div>
+
+              <div class="theme-card" [class.selected]="appearance.theme === 'system'" (click)="appearance.theme = 'system'">
+                <div class="theme-preview tp-system">
+                  <div class="tp-system-left">
+                    <div class="tp-sidebar tp-sidebar-dark" style="width:100%;"></div>
+                  </div>
+                  <div class="tp-system-right">
+                    <div class="tp-sidebar tp-sidebar-light" style="width:100%;"></div>
+                  </div>
+                </div>
+                <div class="theme-label">
+                  @if (appearance.theme === 'system') { <i class="pi pi-check-circle" style="color:#0078d4;"></i> }
+                  Système
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Densité d'affichage</div>
+          <div class="block-body">
+            <div class="density-cards">
+              @for (d of [
+                {value:'compact', label:'Compact', desc:'Interface condensée, plus de contenu visible', lineH:'6px'},
+                {value:'normal', label:'Normal', desc:'Équilibre confort et densité (recommandé)', lineH:'10px'},
+                {value:'comfortable', label:'Confortable', desc:'Espacement généreux, facile à lire', lineH:'14px'}
+              ]; track d.value) {
+                <div class="density-card" [class.selected]="appearance.density === d.value"
+                  (click)="appearance.density = $any(d.value)">
+                  <div class="density-preview">
+                    @for (i of [1,2,3]; track i) {
+                      <div class="density-row" [style.height]="d.lineH"></div>
+                    }
+                  </div>
+                  <div class="density-info">
+                    <strong>{{ d.label }}</strong>
+                    <small>{{ d.desc }}</small>
+                  </div>
+                  @if (appearance.density === d.value) {
+                    <i class="pi pi-check density-check"></i>
+                  }
+                </div>
+              }
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Taille de police</div>
+          <div class="block-body">
+            <div class="form-field" style="max-width: 280px;">
+              <label>Taille de police globale</label>
+              <p-select [(ngModel)]="appearance.fontSize" [options]="fontSizeOptions"
+                optionLabel="label" optionValue="value" class="w-full" />
+            </div>
+            <div class="font-preview" [style.font-size.px]="appearance.fontSize">
+              Aperçu — SecoGroupe Administration
+            </div>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <p-button label="Appliquer" icon="pi pi-check" (click)="save('appearance')" [loading]="saving()" />
+        </div>
+      }
+
+      <!-- ════════════ NOTIFICATIONS ════════════ -->
+      @if (activeSection() === 'notifications') {
+        <div class="section-title-row">
+          <i class="pi pi-bell section-icon"></i>
+          <div>
+            <h2>Notifications</h2>
+            <p>Choisissez les événements pour lesquels vous souhaitez être alerté</p>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Notifications email</div>
+          <div class="block-body notif-list">
+            <div class="notif-item">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-envelope notif-icon" style="color:#0078d4;"></i>
+                  Notifications par email
+                </div>
+                <div class="notif-desc">Activer ou désactiver toutes les notifications par email</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-separator"></div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-sign-in notif-icon" style="color:#107c10;"></i>
+                  Alertes de connexion
+                </div>
+                <div class="notif-desc">Recevoir un email à chaque nouvelle connexion à votre compte</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.loginAlerts" [disabled]="!notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-chart-bar notif-icon" style="color:#8764b8;"></i>
+                  Rapport hebdomadaire
+                </div>
+                <div class="notif-desc">Résumé d'activité envoyé chaque lundi matin</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.weeklyReport" [disabled]="!notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-user-plus notif-icon" style="color:#d83b01;"></i>
+                  Nouvelles inscriptions
+                </div>
+                <div class="notif-desc">Notification à chaque création de nouveau compte utilisateur</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.newRegistrations" [disabled]="!notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-shield notif-icon" style="color:#d13438;"></i>
+                  Alertes de sécurité
+                </div>
+                <div class="notif-desc">Tentatives de connexion suspectes, changements de permissions</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.securityAlerts" [disabled]="!notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-wrench notif-icon" style="color:#605e5c;"></i>
+                  Maintenance système
+                </div>
+                <div class="notif-desc">Avertissements de maintenance planifiée et mises à jour</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.maintenanceAlerts" [disabled]="!notifications.emailEnabled" />
+            </div>
+
+            <div class="notif-item" [class.notif-disabled]="!notifications.emailEnabled">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-download notif-icon" style="color:#107c10;"></i>
+                  Exports terminés
+                </div>
+                <div class="notif-desc">Notification lorsqu'un export de données est prêt au téléchargement</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="notifications.exportCompleted" [disabled]="!notifications.emailEnabled" />
+            </div>
+          </div>
+        </div>
+
+        <div class="section-actions">
+          <p-button label="Enregistrer" icon="pi pi-check" (click)="save('notifications')" [loading]="saving()" />
+        </div>
+      }
+
+      <!-- ════════════ SÉCURITÉ ════════════ -->
+      @if (activeSection() === 'security') {
+        <div class="section-title-row">
+          <i class="pi pi-shield section-icon"></i>
+          <div>
+            <h2>Sécurité</h2>
+            <p>Contrôlez les accès et renforcez la protection des comptes</p>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Authentification</div>
+          <div class="block-body notif-list">
+            <div class="notif-item">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-mobile notif-icon" style="color:#0078d4;"></i>
+                  Authentification à deux facteurs (2FA)
+                  @if (security.twoFactorAuth) {
+                    <span class="security-badge active">Actif</span>
+                  }
+                </div>
+                <div class="notif-desc">Renforcez la sécurité en exigeant un code OTP à chaque connexion</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="security.twoFactorAuth" />
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-user-minus notif-icon" style="color:#d83b01;"></i>
+                  Session unique
+                </div>
+                <div class="notif-desc">Autoriser une seule session active par utilisateur à la fois</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="security.singleSession" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Politique de mots de passe</div>
+          <div class="block-body notif-list">
+            <div class="notif-item">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-lock notif-icon" style="color:#8764b8;"></i>
+                  Mots de passe forts obligatoires
+                </div>
+                <div class="notif-desc">Exiger au moins 8 caractères avec majuscules, chiffres et symboles</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="security.enforceStrongPasswords" />
+            </div>
+
+            <div class="notif-item">
+              <div class="notif-info">
+                <div class="notif-title">
+                  <i class="pi pi-calendar notif-icon" style="color:#605e5c;"></i>
+                  Expiration des mots de passe
+                </div>
+                <div class="notif-desc">Forcer le renouvellement du mot de passe tous les 90 jours</div>
+              </div>
+              <p-toggleswitch [(ngModel)]="security.passwordExpiry" />
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Durée de session</div>
+          <div class="block-body">
+            <div class="form-field" style="max-width: 280px;">
+              <label>Déconnexion automatique après</label>
+              <p-select [(ngModel)]="security.sessionDuration" [options]="sessionDurationOptions"
+                optionLabel="label" optionValue="value" class="w-full" />
+              <small class="hint">Les sessions inactives seront fermées automatiquement</small>
+            </div>
+          </div>
+        </div>
+
+        <div class="settings-block">
+          <div class="block-header">Activité récente</div>
+          <div class="block-body" style="padding: 0;">
+            <table class="activity-table">
+              <thead>
+                <tr>
+                  <th>Date &amp; heure</th>
+                  <th>Appareil</th>
+                  <th>Adresse IP</th>
+                  <th>Localisation</th>
+                  <th>Statut</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (entry of recentLogins; track entry.date) {
+                  <tr>
+                    <td class="text-secondary">{{ entry.date | date:'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ entry.device }}</td>
+                    <td class="ip-cell">{{ entry.ip }}</td>
+                    <td class="text-secondary">{{ entry.location }}</td>
+                    <td>
+                      <p-tag
+                        [value]="entry.success ? 'Succès' : 'Échec'"
+                        [severity]="getLoginSeverity(entry.success)"
+                      />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="section-actions actions-spaced">
+          <p-button
+            label="Déconnecter tous les appareils"
+            icon="pi pi-sign-out"
+            severity="danger"
+            [outlined]="true"
+            (click)="disconnectAll()"
+          />
+          <p-button label="Enregistrer" icon="pi pi-check" (click)="save('security')" [loading]="saving()" />
+        </div>
+      }
+
+    </div><!-- /settings-content -->
+  </div><!-- /settings-shell -->
+</div>
+
+<p-toast position="top-right" />

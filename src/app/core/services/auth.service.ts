@@ -10,14 +10,17 @@ import {
   VerifyOtpRequest,
 } from '../models/auth.models';
 import { TokenService } from './token.service';
+import { CurrentUserService } from './current-user.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly tokenService = inject(TokenService);
+  private readonly currentUserService = inject(CurrentUserService);
   private readonly router = inject(Router);
 
-  private readonly baseUrl = 'http://localhost:8080/auth';
+  private readonly baseUrl = `${environment.apiUrl}/auth/v1`;
 
   register(request: RegisterRequest): Observable<string> {
     return this.http.post(`${this.baseUrl}/register`, request, { responseType: 'text' });
@@ -39,19 +42,26 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/login`, request).pipe(
-      tap((res) => this.tokenService.setTokens(res.accessToken, res.refreshToken))
+      tap((res) => {
+        this.tokenService.setTokens(res.accessToken, res.refreshToken);
+        this.currentUserService.refresh();
+      })
     );
   }
 
   refresh(request: RefreshRequest): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(`${this.baseUrl}/refresh`, request).pipe(
-      tap((res) => this.tokenService.setTokens(res.accessToken, res.refreshToken))
+      tap((res) => {
+        this.tokenService.setTokens(res.accessToken, res.refreshToken);
+        this.currentUserService.refresh();
+      })
     );
   }
 
   logout(): Observable<void> {
     return this.http.post<void>(`${this.baseUrl}/logout`, {}).pipe(
       tap(() => {
+        this.currentUserService.clear();
         this.tokenService.clearTokens();
         this.router.navigate(['/signin']);
       })

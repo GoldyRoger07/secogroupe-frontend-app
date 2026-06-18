@@ -1,0 +1,76 @@
+/* ── Grid card ── */
+.user-card-item .card-avatar-circle { margin-top: 20px; }
+
+/* ── Table ── */
+.user-cell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.username {
+  font-weight: 500;
+}
+
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+.dialog-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 4px 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 14px;
+}
+
+.form-row.two-col .form-field {
+  flex: 1;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.req {
+  color: #d13438;
+}
+
+.optional {
+  font-size: 11px;
+  color: #a19f9d;
+  font-weight: 400;
+}
+
+.error {
+  color: #d13438;
+  font-size: 12px;
+}

@@ -1,0 +1,240 @@
+/* ── Grid card ── */
+.emp-card-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 18px 0 10px;
+  flex-shrink: 0;
+  border: 3px solid #e0dedd;
+}
+
+.emp-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.emp-card-initials {
+  width: 100%;
+  height: 100%;
+  color: #fff;
+  font-size: 22px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.card-position {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  font-weight: 500;
+}
+
+.emp-card-contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 12px;
+  color: #605e5c;
+  padding: 4px 12px 8px;
+  width: 100%;
+  text-align: left;
+}
+
+.emp-card-contacts span {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.emp-card-contacts i {
+  color: #a19f9d;
+  flex-shrink: 0;
+}
+
+/* ── Avatar in table ── */
+.emp-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.emp-photo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.emp-initials {
+  width: 100%;
+  height: 100%;
+  background: #107c10;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.full-name {
+  font-weight: 500;
+}
+
+.action-btns {
+  display: flex;
+  justify-content: center;
+  gap: 2px;
+}
+
+/* Dialog form */
+.dialog-form {
+  padding: 4px 0;
+}
+
+.form-with-photo {
+  display: flex;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+/* Photo section */
+.photo-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.photo-preview-wrapper {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px dashed #d2d0ce;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5f4f3;
+  transition: border-color 0.15s;
+}
+
+.photo-preview-wrapper:hover {
+  border-color: #0078d4;
+}
+
+.photo-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.photo-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: #a19f9d;
+  font-size: 12px;
+  text-align: center;
+  padding: 8px;
+}
+
+.photo-placeholder i {
+  font-size: 24px;
+}
+
+.photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.15s;
+  border-radius: 50%;
+}
+
+.photo-preview-wrapper:hover .photo-overlay {
+  opacity: 1;
+}
+
+.remove-photo-btn {
+  background: none;
+  border: none;
+  color: #d13438;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 4px;
+}
+
+.remove-photo-btn:hover {
+  text-decoration: underline;
+}
+
+.photo-hint {
+  font-size: 11px;
+  color: #a19f9d;
+  text-align: center;
+}
+
+/* Fields */
+.form-fields {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+
+.form-row {
+  display: flex;
+  gap: 12px;
+}
+
+.form-row.two-col .form-field {
+  flex: 1;
+  min-width: 0;
+}
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.form-field label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #323130;
+}
+
+.req {
+  color: #d13438;
+}
+
+.error {
+  color: #d13438;
+  font-size: 12px;
+}
