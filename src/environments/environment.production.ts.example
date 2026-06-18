@@ -1,0 +1,8 @@
+// ================================================================
+// TEMPLATE — copie ce fichier en environment.production.ts et remplis les valeurs
+// Ce fichier EST commité dans Git (il sert de documentation)
+// ================================================================
+export const environment = {
+  production: true,
+  apiUrl: 'https://api.secogroupe.com',  // URL de ton backend en production
+};
